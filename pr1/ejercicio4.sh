@@ -15,7 +15,7 @@ done
 echo "introdizca un caracter a contar recursivamente en los nombres de los ficheros o directorios:"
 clock=5
 while [ $((0)) -lt $((clock)) ] ; do
-	echo -e "\rtienes ${clock} segundos para introducit el caracter: \c"
+	echo -e "\rtienes $clock segundos para introducit el caracter: \c"
 	read -t 1 character
 	clock=$((clock-1))
 	if [ ! -z "$character" ]; then
