@@ -1,3 +1,4 @@
 pr1/test/*
 pr1/test_bak/*
 **/Makefile
+**/*test*
