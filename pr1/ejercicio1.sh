@@ -1,4 +1,5 @@
 #!/bin/bash
+#this scipt counts and order all c source code files by number of characters
 varh=$(ls *.c | wc -l)
 varc=$(ls *.h | wc -l)
 var=$((varc+varh))

@@ -1,4 +1,5 @@
 #!/bin/bash
+#this script organizes the files by size and moves the files to an acording directory
 if [ "$1" == $"" ]; then
 	echo "error"
 else

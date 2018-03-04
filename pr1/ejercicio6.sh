@@ -1,4 +1,6 @@
 #!/bin/bash
+#this sctipt makes an html human readeable list of all the
+#recursive directories of a given bvase directory
 function explore_directory {
 	if [ ${#output} -gt 1000 ]; then
 		echo $output >> $dir.html

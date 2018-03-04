@@ -1,4 +1,8 @@
 #!/bin/bash
+#this script:
+#counts the files in the current directory
+#list all the conected users
+#conunts the number of ocurrences of a said character (user imput) in the directory files/directories names
 files=$(ls)
 count=$((0))
 echo $files
