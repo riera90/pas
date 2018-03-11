@@ -1,5 +1,6 @@
 #!/bin/bash
 #this scripts makes a human readeble version of a file containing films
+#ejercicio1.sh <file to read from>
 printf "\n*******\n1) Lineas con las duraciones de las peliculas\n\n"
 cat $1 | grep -E ^[0-9].*[\ ][0-9].*min
 printf "\n*******\n2) Líneas con el pais de las películas\n\n"
