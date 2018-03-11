@@ -1,4 +1,6 @@
 pr1/test/*
 pr1/test_bak/*
 **/Makefile
+**/makefile
 **/*test*
+**/*sin_lineas_vacias
