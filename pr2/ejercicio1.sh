@@ -18,7 +18,7 @@ cat $1 | grep -E ^[\ ]*E
 printf "\n*******\n7) Lı́neas que contienen d, l o t, una vocal y la misma letra.\n\n"
 cat $1 | grep -E '([dlt])[aeiou]\1'
 printf "\n*******\n8) Lı́neas que contienen ocho aes o más.\n\n"
-cat $1 | grep -E '([Aa].*){8,100}'
+cat $1 | grep -E '([Aa].*){8,}'
 printf "\n*******\n9) Lı́neas que terminan con tres puntos y no empiezan por espacio.\n\n"
 cat $1 | grep -E '^[^\ ].*([\.]){3,3}'
 printf "\n*******\n10) Mostrar entre comillas las vocales con tilde.\n\n"

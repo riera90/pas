@@ -14,9 +14,9 @@ done
 echo -e "hay $count ficheros en este directorio"
 echo "la lista de usuarios conectados ahora es:"
 for it in $(who | cut -d " " -f 1 | tr "" "\n") ; do
-	echo $it 
+	echo $it
 done
-echo "introdizca un caracter a contar recursivamente en los nombres de los ficheros o directorios:"
+echo "introduzca un caracter a contar recursivamente en los nombres de los ficheros o directorios:"
 clock=5
 while [ $((0)) -lt $((clock)) ] ; do
 	echo -e "\rtienes $clock segundos para introducit el caracter: \c"
