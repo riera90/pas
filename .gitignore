@@ -4,3 +4,7 @@ pr1/test_bak/*
 **/makefile
 **/*test*
 **/*sin_lineas_vacias
+*.out
+*.o
+*.a
+*.lib
