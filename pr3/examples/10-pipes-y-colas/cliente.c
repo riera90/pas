@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	mqd_t mq_server;
 	// Buffer para intercambiar mensajes
 	char buffer[MAX_SIZE];
-	
+
 	// Abrir la cola del servidor. La cola CLIENT_QUEUE le servira en ejercicio resumen
 	mq_server = mq_open(SERVER_QUEUE, O_WRONLY);
 	if(mq_server == (mqd_t)-1 )
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	}
 
 	printf("Mandando mensajes al servidor (escribir \"%s\" para parar):\n", MSG_STOP);
-	do 
+	do
 	{
 		printf("> ");
 		fflush(stdout);                  // Limpiar buffer de salida
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
 
 // Función auxiliar, escritura de un log
-void funcionLog(char *mensaje) 
+void funcionLog(char *mensaje)
 {
 	int resultado;
 	char nombreFichero[100];
@@ -75,7 +75,7 @@ void funcionLog(char *mensaje)
 			exit(1);
 		}
 	}
-
+%%%%%%%
 	// Obtener la hora actual
 	t = time(NULL);
 	struct tm * p = localtime(&t);
@@ -83,7 +83,7 @@ void funcionLog(char *mensaje)
 
 	// Vamos a incluir la hora y el mensaje que nos pasan
 	sprintf(mensajeAEscribir, "%s ==> %s\n", mensajeAEscribir, mensaje);
-	
+
 	// Escribir finalmente en el fichero
 	resultado = fputs(mensajeAEscribir,fLog);
 	if ( resultado < 0)

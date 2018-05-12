@@ -28,14 +28,14 @@ int main(int argc, char **argv)
 	attr.mq_msgsize = MAX_SIZE; // Maximo tamaño de un mensaje
 
 	// Crear la cola de mensajes del servidor. La cola CLIENT_QUEUE le servira en ejercicio resumen
-	mq_server = mq_open(SERVER_QUEUE, O_CREAT | O_RDONLY, 0644, &attr);	
+	mq_server = mq_open(SERVER_QUEUE, O_CREAT | O_RDONLY, 0644, &attr);
 	if(mq_server == (mqd_t)-1 )
 	{
    	perror("Error al abrir la cola del servidor");
       exit(-1);
 	}
 
-	do 
+	do
 	{
 		// Número de bytes leidos
 		ssize_t bytes_read;
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 
 
 // Función auxiliar, escritura de un log. No se usa en este ejemplo, pero le servira en ejercicio resumen
-void funcionLog(char *mensaje) 
+void funcionLog(char *mensaje)
 {
 	int resultado;
 	char nombreFichero[100];
@@ -103,7 +103,7 @@ void funcionLog(char *mensaje)
 
 	// Vamos a incluir la hora y el mensaje que nos pasan
 	sprintf(mensajeAEscribir, "%s ==> %s\n", mensajeAEscribir, mensaje);
-	
+
 	// Escribir finalmente en el fichero
 	resultado = fputs(mensajeAEscribir,fLog);
 	if (resultado < 0)
