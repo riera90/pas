@@ -1,0 +1,305 @@
+
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ragged2e}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+\usepackage{enumerate}
+
+\graphicspath{/mnt/data_1/code/pas/pr4/pictures}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
+\title{Apache}
+\author{Diego Rodríguez Riera}
+
+\begin{document}
+
+\maketitle
+\pagebreak
+\tableofcontents
+\pagebreak
+
+\section{introduction}
+\subparagraph{Where am I working?}
+In the docker \href{https://hub.docker.com/r/riera90/apache/}{riera90/apache:latest} (Debian based Docker with Apache/2.4.25).
+\subparagraph{Why Docker?}
+\tab For a more stable environment and for security reasons.
+In addition to that I personally use \href{https://www.archlinux.org/}{Arch Linux}, witch is very advanced in versions in contrast to Debian, the most popular distribution for servers (not counting redhat distros), so many things that work on Arch doesn't dork on Debian.\vspace{0.5cm}\\\tab
+In addition to that, a docker is very similar to a server (in fact most servers run on docker in fact), that's because only the necessary is install apart from vim, witch I prefer over nano.\vspace{0.5cm}\\\tab
+And even if you manage to break something, just restart the docker and everything will be back from where you started.
+
+\subparagraph{How to get Docker up and running}
+First you need to install docker, in Debian based distros, you will need to:\\
+Update, install docker and run the daemon (only in some cases)\\
+The "\#" indicates that the command should be run as root.
+\begin{verbatim}
+# apt update
+# apt isntall docker.io
+# systemctl start docker.socket
+\end{verbatim}
+After that, you should be able to launch dockers, try:
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\# docker run --rm hello-world
+\\\hline\end{tabular}\vspace{0.5cm}\\
+The output should be as follows:\\
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\# docker run --rm hello-world\\
+Hello from Docker!\\
+This message shows that your installation appears to be working correctly.\\
+To generate this message, Docker took the following steps:\\
+ 1. The Docker client contacted the Docker daemon.\\
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.\\
+    (amd64)\\
+ 3. The Docker daemon created a new container from that image which runs the\\
+    executable that produces the output you are currently reading.\\
+ 4. The Docker daemon streamed that output to the Docker client, which sent it\\
+    to your terminal.\\
+To try something more ambitious, you can run an Ubuntu container with:\\
+ \$ docker run -it ubuntu bash\\
+Share images, automate workflows, and more with a free Docker ID:\\
+ https://hub.docker.com/\\
+For more examples and ideas, visit:\\
+ https://docs.docker.com/engine/userguide/\\
+\hline\end{tabular}\vspace{0.5cm}\\
+Now that we now that docker runs, let's try to run my docker, try the following command:
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\# docker run --rm -it --net=host riera90/apache:latest
+\\\hline\end{tabular}\vspace{0.5cm}\\
+Congratulations, you have a running apache server now!\\
+The docker is running on you local network.\vspace{0.5cm}\\
+Lets launch the Apache server, for that, you should execute the following command (on the docker):
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+docker\# apache2ctl start
+\\\hline\end{tabular}\vspace{0.5cm}\\
+To test if it is working properly, lets send him a request.
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\$ curl localhost:80
+\\\hline\end{tabular}\vspace{0.5cm}\\
+It shoyld return somethoing like this:
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+!DOCTYPE html PUBLIC...
+\\\hline\end{tabular}\vspace{0.5cm}\\
+Congratulations you now have a full running Apache server!
+\section{introductory exercises}
+This exercises are omitted due to their non existence of problematic.\\
+Thous exercises are the 1 and 2.
+
+
+\section{Prots}
+\subparagraph{Statement}
+Change the port from 80 to 8080
+\subparagraph{Solution}
+In the {\it"/etc/apache2/ports.conf"} we should change the port under the Listen parameter (arround line 5)
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Listen 80
+\\\hline\end{tabular}\vspace{0.5cm}\\
+To
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Listen 8080
+\\\hline\end{tabular}\vspace{0.5cm}\\
+restart Apache with
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+docker\# apache2ctl restart
+\\\hline\end{tabular}\vspace{0.5cm}\\
+And test if the port has changed to 8080
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\& curl localhost:80
+\\\hline\end{tabular}\vspace{0.5cm}\\
+The response should be:
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+curl: (7) Failed to connect to localhost port 80: Connection refused
+\\\hline\end{tabular}\vspace{0.5cm}\\
+Now lets try the :8080
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+\& curl localhost:8080\\
+!DOCTYPE html PUBLIC...
+\\\hline\end{tabular}\vspace{0.5cm}\\
+For making things easy, y will revert this change.
+\pagebreak
+
+\section{Basic webpage}
+\subparagraph{Statement}
+Build a basic html webpage
+\subparagraph{Solution}
+We will create a couple of files under the {\it "/var/www/myhtml"} directory:\vspace{0.5cm}\\\tab
+index.html\\Witch contains the following code
+\begin{verbatim}
+<!DOCTYPE html>
+  <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>index</title>
+  </head>
+  <body>
+    hi, i'm the index page
+    <a href="login.html">login</a>
+    <a href="register.html">register</a>
+  </body>
+</html>
+\end{verbatim}
+\vspace{0.5cm}\\\tab "login.html"\\Witch contains the following code
+\begin{verbatim}
+<!DOCTYPE html>
+  <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>login</title>
+  </head>
+  <body>
+    this would be a login page
+  </body>
+</html>
+\end{verbatim}
+\pagebreak
+\tab register.html\\Witch contains the following code
+\begin{verbatim}
+<!DOCTYPE html>
+  <html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>register</title>
+  </head>
+  <body>
+    this would be a register page
+  </body>
+</html>
+\end{verbatim}
+\vspace{0.5cm}\\
+Now edit the {\it "/etc/apache2/sites-enabled/000-default.conf"}
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+DocummentRout /var/www/myhtml
+\\\hline\end{tabular}\vspace{0.5cm}\\
+\vspace{0.5cm}\\
+Reload Apache and go to the browser, enter the url {\it "localhost"}, all should work fine.
+
+\section{index filenames}
+\subparagraph{Statement}
+Change the index filename
+\subparagraph{Solution}
+now we rename our {\it "index.html"} to {\it "homepage.html"} (int /var/www/myhtml)\\
+To reflect this change we should change the {\it "/etc/apache2/mods-enabled/dir.conf"}
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+DirectoryIndex index.html ...... index.htm homepage.html
+\\\hline\end{tabular}\vspace{0.5cm}\\
+
+
+\section{empty directories}
+\subparagraph{Statement}
+View an empty directory
+\subparagraph{Solution}
+just create an empty directory {\it /var/www/empty} and set the document root to said empty directory, Apache will render a empty folder in your browser.
+\pagebreak
+
+\section{server-name}
+\subparagraph{Statement}
+Change the server name
+\subparagraph{Solution}
+We will edit the {\it /etc/apache2/apache2.conf} and add de {\it "ServerName"} directive in our case:
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+ServerName localhost
+\\\hline\end{tabular}\vspace{0.5cm}\\
+
+\section{apache useranme and group}
+\subparagraph{Statement}
+change the apache (daemon) username and group
+\subparagraph{Solution}
+This configuration is present in the file {\it /etc/apache2/apache2.conf} around line 110.\\
+You can change this, but i would not recommend it unless you are really serious in security.
+
+
+\section{GET signal}
+\subparagraph{Statement}
+make a HTML GET request
+\subparagraph{Solution}
+In my case, there are no error signals because is properly configured.\vspace{0.5cm}\\
+What is happening is a GET signal is send to the daemon, witch returns the {\it index.html} file.
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+telnet localhost 80\\
+Trying ::1...\\
+Connected to localhost.\\
+Escape character is.\\
+GET / HTTP/1.0\\
+HTTP/1.1 200 OK\\
+Date: Sat, 12 May 2018 20:22:38 GMT\\
+Server: Apache/2.4.25 (Debian)\\
+Vary: Accept-Encoding\\
+Content-Length: 746\\
+Connection: close\\
+Content-Type: text/html;charset=UTF-8\\
+!DOCTYPE HTML PUBLIC...\\
+Connection closed by foreign host.\\
+\\\hline\end{tabular}\vspace{0.5cm}\\
+\pagebreak
+
+\section{Custom error messages}
+\subparagraph{Statement}
+Modify the error messages so then the server launches a 404 it returns "ERROR 404: Oh Pipo, where is Pipo? Have You seen Pipo?"
+\subparagraph{Solution}
+First we will create a new file {\it "/etc/apache2/extra/error.conf"}\\
+In this file we will write the following line
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+ErrorDocument 404 "ERROR 404: Oh Pipo, where is Pipo? Have You seen Pipo?"
+\\\hline\end{tabular}\vspace{0.5cm}\\
+And The last spet is to add this file to the {\it apache2.conf} file with the following line
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+IncludeOptional extra/*conf
+\\\hline\end{tabular}\vspace{0.5cm}\\
+The error message should now be changed, how can also render a page on error with the directive
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+ErrorDocument 404 error404.html
+\\\hline\end{tabular}\vspace{0.5cm}\\
+
+\section{error log}
+\subparagraph{Statement}
+Error log basics
+\subparagraph{Solution}
+The error logs are, as all Linux applications under {\it /var/log}, {\it /var/log/apache2} in our case, there are 3 logs:
+\begin{itemize}
+  \item {\it /var/log/apache2/error.log}
+  \item {\it /var/log/apache2/access.log}
+  \item {\it /var/log/apache2/other\_vhosts\_access.log}
+\end{itemize}
+What is contains in the files does not require an explanation.
+\pagebreak
+
+
+\section{Redirect}
+\subparagraph{Statement}
+Redirect /uco to uco.es
+\subparagraph{Solution}
+This is a very simple directive, we will just add a line to the {\it etc/apache2/apache2.conf}
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+RedirectPermanent /uco https://www.uco.es/
+\\\hline\end{tabular}\vspace{0.5cm}\\
+
+\section{Virtual Host}
+\subparagraph{Statement}
+make a virtual host called virtual with different logs files
+\subparagraph{Solution}
+First we copy the {\it /etc/apache2/sites-available/000-defautl.conf} into {\it /etc/apache2/sites-available/virtual.com.conf} and edit it to reflect this configuration
+\begin{verbatim}
+<VirtualHost *:81>
+  ServerName virtual.com
+  ServerAdmin webmaster@localhost
+  DocumentRoot /var/www/virtial.com
+  ErrorLog ${APACHE_LOG_DIR}/error-virtual.log
+  CustomLog ${APACHE_LOG_DIR}/access-virtual.log combined
+</VirtualHost>
+\end{verbatim}
+Then add the directory {\it /var/www/virtial.com} and his correspondent files, you can just copy from the previous myhtml and modify the index to know in what directory you are.\vspace{0.5cm}\\\tab
+Now we shall enable the site by 
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Now we shall activate the site by runnign a2ensite
+\\\hline\end{tabular}\vspace{0.5cm}\\ual.com
+
+
+\vspace*{\fill} %se va al final de la pagina
+\raggedleft Documento escrito en \LaTeX{}
+\end{document}
