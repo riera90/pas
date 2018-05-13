@@ -3,17 +3,25 @@
 \usepackage[utf8]{inputenc}
 \usepackage{ragged2e}
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage{dirtree}
+\usepackage{fancyhdr}
 \usepackage{listings}
+\usepackage{scrextend}
+\usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=cyan,
 }
-\usepackage{enumerate}
+\pagestyle{fancy}
 
-\graphicspath{/mnt/data_1/code/pas/pr4/pictures}
+\lhead{Apache configuration}
+\rfoot{Page \thepage}
+\lfoot{Diego Rodríguez Riera}
+\cfoot{}
+
 \newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \title{Apache}
@@ -26,11 +34,11 @@
 \tableofcontents
 \pagebreak
 
-\section{introduction}
+\section{Introduction}
 \subparagraph{Where am I working?}
 In the docker \href{https://hub.docker.com/r/riera90/apache/}{riera90/apache:latest} (Debian based Docker with Apache/2.4.25).
 \subparagraph{Why Docker?}
-\tab For a more stable environment and for security reasons.
+For a more stable environment and for security reasons.
 In addition to that I personally use \href{https://www.archlinux.org/}{Arch Linux}, witch is very advanced in versions in contrast to Debian, the most popular distribution for servers (not counting redhat distros), so many things that work on Arch doesn't dork on Debian.\vspace{0.5cm}\\\tab
 In addition to that, a docker is very similar to a server (in fact most servers run on docker in fact), that's because only the necessary is install apart from vim, witch I prefer over nano.\vspace{0.5cm}\\\tab
 And even if you manage to break something, just restart the docker and everything will be back from where you started.
@@ -41,7 +49,7 @@ Update, install docker and run the daemon (only in some cases)\\
 The "\#" indicates that the command should be run as root.
 \begin{verbatim}
 # apt update
-# apt isntall docker.io
+# apt install docker.io
 # systemctl start docker.socket
 \end{verbatim}
 After that, you should be able to launch dockers, try:
@@ -89,7 +97,7 @@ It shoyld return somethoing like this:
 Congratulations you now have a full running Apache server!
 \section{introductory exercises}
 This exercises are omitted due to their non existence of problematic.\\
-Thous exercises are the 1 and 2.
+This exercises are the numbers 1 and 2.
 
 
 \section{Prots}
@@ -122,7 +130,6 @@ Now lets try the :8080
 !DOCTYPE html PUBLIC...
 \\\hline\end{tabular}\vspace{0.5cm}\\
 For making things easy, y will revert this change.
-\pagebreak
 
 \section{Basic webpage}
 \subparagraph{Statement}
@@ -157,7 +164,6 @@ index.html\\Witch contains the following code
   </body>
 </html>
 \end{verbatim}
-\pagebreak
 \tab register.html\\Witch contains the following code
 \begin{verbatim}
 <!DOCTYPE html>
@@ -179,7 +185,7 @@ DocummentRout /var/www/myhtml
 \vspace{0.5cm}\\
 Reload Apache and go to the browser, enter the url {\it "localhost"}, all should work fine.
 
-\section{index filenames}
+\section{Index filenames}
 \subparagraph{Statement}
 Change the index filename
 \subparagraph{Solution}
@@ -190,14 +196,14 @@ DirectoryIndex index.html ...... index.htm homepage.html
 \\\hline\end{tabular}\vspace{0.5cm}\\
 
 
-\section{empty directories}
+\section{Empty directories}
 \subparagraph{Statement}
 View an empty directory
 \subparagraph{Solution}
 just create an empty directory {\it /var/www/empty} and set the document root to said empty directory, Apache will render a empty folder in your browser.
 \pagebreak
 
-\section{server-name}
+\section{Server-name}
 \subparagraph{Statement}
 Change the server name
 \subparagraph{Solution}
@@ -206,7 +212,7 @@ We will edit the {\it /etc/apache2/apache2.conf} and add de {\it "ServerName"} d
 ServerName localhost
 \\\hline\end{tabular}\vspace{0.5cm}\\
 
-\section{apache useranme and group}
+\section{Apache useranme and group}
 \subparagraph{Statement}
 change the apache (daemon) username and group
 \subparagraph{Solution}
@@ -247,16 +253,16 @@ In this file we will write the following line
 \vspace{0.5cm}\\\begin{tabular}{|l|}\hline
 ErrorDocument 404 "ERROR 404: Oh Pipo, where is Pipo? Have You seen Pipo?"
 \\\hline\end{tabular}\vspace{0.5cm}\\
-And The last spet is to add this file to the {\it apache2.conf} file with the following line
+And The last step is to add this file to the {\it apache2.conf} file with the following line
 \vspace{0.5cm}\\\begin{tabular}{|l|}\hline
 IncludeOptional extra/*conf
 \\\hline\end{tabular}\vspace{0.5cm}\\
-The error message should now be changed, how can also render a page on error with the directive
+The error message should now be changed, how can also return a page on error with the directive
 \vspace{0.5cm}\\\begin{tabular}{|l|}\hline
 ErrorDocument 404 error404.html
 \\\hline\end{tabular}\vspace{0.5cm}\\
 
-\section{error log}
+\section{Error log}
 \subparagraph{Statement}
 Error log basics
 \subparagraph{Solution}
@@ -285,21 +291,91 @@ make a virtual host called virtual with different logs files
 \subparagraph{Solution}
 First we copy the {\it /etc/apache2/sites-available/000-defautl.conf} into {\it /etc/apache2/sites-available/virtual.com.conf} and edit it to reflect this configuration
 \begin{verbatim}
-<VirtualHost *:81>
-  ServerName virtual.com
+<VirtualHost *:80>
+  ServerName example.com
   ServerAdmin webmaster@localhost
-  DocumentRoot /var/www/virtial.com
-  ErrorLog ${APACHE_LOG_DIR}/error-virtual.log
-  CustomLog ${APACHE_LOG_DIR}/access-virtual.log combined
+  DocumentRoot /var/www/example.com
+  ErrorLog ${APACHE_LOG_DIR}/error-example.log
+  CustomLog ${APACHE_LOG_DIR}/access-example.log combined
 </VirtualHost>
 \end{verbatim}
-Then add the directory {\it /var/www/virtial.com} and his correspondent files, you can just copy from the previous myhtml and modify the index to know in what directory you are.\vspace{0.5cm}\\\tab
-Now we shall enable the site by 
-\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Then add the directory {\it /var/www/example.com/Public\_html} and his correspondent files, you can just copy from the previous myhtml and modify the index to know in what directory you are.\vspace{0.5cm}\\
 Now we shall activate the site by runnign a2ensite
-\\\hline\end{tabular}\vspace{0.5cm}\\ual.com
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+a2ensite example.com
+\\\hline\end{tabular}\vspace{0.5cm}\\
+As we don't own the hostname, we shall redirect the traffic internally, by adding the line.
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+x.x.x.x example.com
+\\\hline\end{tabular}\vspace{0.5cm}\\
+where x.x.x.x is your ip
+\pagebreak
 
+\section{Documentation}
+\subparagraph{Statement}
+Show the Apache documentation.
+\subparagraph{Solution}
+We will redirect the {\it /doc} to {\it https://httpd.apache.org/docs/2.4/} By adding the line
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+RedirectPermanent /doc https://httpd.apache.org/docs/2.4/
+\\\hline\end{tabular}\vspace{0.5cm}\\
+As the version 2.4 of apache does not have any configuration documentation, at least in the debian package.
+
+\section{Restrained access based on user}
+\subparagraph{Statement}
+Protect some files under user and password.
+\subparagraph{Solution}
+We will use the previous configuration for a easier configuration.\\
+First lets add the diego user.
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+htpasswd -c /etc/apache2/.htpasswd diego
+\\\hline\end{tabular}\vspace{0.5cm}\\
+It will ask for a password.\\
+Then we will ad this lines to the {\it apache2.conf} file
+\begin{verbatim}
+  <Directory "/var/www/myhtml">
+    AuthType Basic
+    AuthName "Authentication Required"
+    AuthUserFile "/etc/apache2/.htpasswd"
+    Require valid-user
+
+    Order allow,deny
+    Allow from all
+  </Directory>
+\end{verbatim}
+We van also use the directive
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Require user diego
+\\\hline\end{tabular}\vspace{0.5cm}\\
+Restart and we are good to go!
+\pagebreak
+
+
+\section{Restrained access based on IP}
+\subparagraph{Statement}
+Protect some files based on user IP.
+\subparagraph{Solution}
+This is really similar to the user Require, it only differs in that the directive is the following.
+\vspace{0.5cm}\\\begin{tabular}{|l|}\hline
+Require ip x.x.x.x
+\\\hline\end{tabular}\vspace{0.5cm}\\
+
+\section{Extra restriction}
+\subparagraph{Statement}
+What if I want to combine the two previous authentications methods?
+\subparagraph{Solution}
+we will use the directives
+\begin{verbatim}
+<RequireAny>
+  ....
+</RequireAny>
+
+<RequireAll>
+  ....
+</RequireAll>
+\end{verbatim}
+The RequireAll directive would be the same as not having the block, but is useful when combining the directives into blocks.
 
 \vspace*{\fill} %se va al final de la pagina
-\raggedleft Documento escrito en \LaTeX{}
+\raggedleft Document written in \LaTeX{}
 \end{document}
