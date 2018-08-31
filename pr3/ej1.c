@@ -116,7 +116,6 @@ void groupid(char* groupid)
 	printGroupInfo(group);
 }
 
-º
 void allgroups()
 {
 	int start, end;
