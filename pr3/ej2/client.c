@@ -8,12 +8,20 @@
 #include <mqueue.h>
 #include <time.h>
 #include <errno.h>
+#include <getopt.h>
+
+void help()
+{
+	printf("-m <message> sends a message to the server.\n");
+	printf("-h prints this help message.\n");
+}
 
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char *argv[]) {
 
-	//creates the queue
+	//opens the queue
 	struct mq_attr attr;
+	char buffer[MAX_MESSAGE_SIZE + 1];
 
 	attr.mq_maxmsg = MAX_MESSAGES;      // MAX NUM OF MESSAGES
 	attr.mq_msgsize = MAX_MESSAGE_SIZE; // MAX SIZE OF MESSAGE
@@ -29,12 +37,59 @@ int main(int argc, char const *argv[]) {
 	}
 	printf(" DONE\n");
 
+	char* options_with_argument="m";
+	int opt;
 
+	while ( (opt = getopt(argc, argv, "m:h")) != -1 )
+	{
+		switch (opt) {
+			case 'm':
+			{
+				printf("[SERVER]: sending message...");
+				fflush(stdout);
+				if (  mq_send(mq_client, optarg, MAX_MESSAGE_SIZE, 0) != 0 )
+				{
+					fprintf(stderr,"\n[SERVER]: Error sending message trought queue\n");
+					abort();
+				}
+				printf(" DONE\n");
+				return 0;
+			}
 
+			case 'h':
+			{
+				help();
+				return 0;
+			}
 
+			case '?':
+			{
+				int option_index=0;
+				while ( options_with_argument[option_index] != '\0' )
+				{
+					if ( optopt==options_with_argument[option_index] )
+					{
+						//wow thats what I call a shity code with a lot of indentation...
+						printf("-%c needs an argument\n",optopt);
+						help();
+						abort();
+					}
+					option_index++;
+				}
+				printf("-%c is not an option\n",optopt);
+				help();
+				abort();
+				}
 
+			default:
+			{
+				fprintf(stderr, "\n\n\tFATAL ERROR, ABORTING!\n\n");
+				abort();
+				break;
+			}
+		}
+	}
 
-	char buffer[MAX_MESSAGE_SIZE + 1];
 
 	while ( buffer != EXIT_COMMAND)
 	{

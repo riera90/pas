@@ -8,9 +8,75 @@
 #include <mqueue.h>
 #include <time.h>
 #include <errno.h>
+#include <getopt.h>
+#include <regex.h>
+#include <string.h>
 
 
-int main(int argc, char const *argv[]) {
+
+void help()
+{
+	printf("-s <secret> set the secret password.\n");
+	printf("-h prints this help message.\n");
+}
+
+
+int main(int argc, char *argv[]) {
+
+	char* options_with_argument="s";
+	int opt;
+	char* secret=NULL;
+
+
+	while ( (opt = getopt(argc, argv, "s:h")) != -1 )
+	{
+		switch (opt) {
+			case 's':
+			{
+				secret=optarg;
+				printf("[SERVER] Secret password set to <%s>\n",secret );
+				break;
+			}
+
+			case 'h':
+			{
+				help();
+				return 0;
+			}
+
+			case '?':
+			{
+				int option_index=0;
+				while ( options_with_argument[option_index] != '\0' )
+				{
+					if ( optopt==options_with_argument[option_index] )
+					{
+						//wow thats what I call a shity code with a lot of indentation...
+						printf("-%c needs an argument\n",optopt);
+						help();
+						abort();
+					}
+					option_index++;
+				}
+				printf("-%c is not an option\n",optopt);
+				help();
+				abort();
+				}
+
+			default:
+			{
+				fprintf(stderr, "\n\n\tFATAL ERROR, ABORTING!\n\n");
+				abort();
+				break;
+			}
+		}
+	}
+
+	if (secret == NULL)
+	{
+		help();
+		return 1;
+	}
 
 	//creates the queue
 	struct mq_attr attr;
@@ -31,8 +97,23 @@ int main(int argc, char const *argv[]) {
 
 
 
+	//compiles the regex
+	printf("[SERVER]: 'compiling' regex...");
+	fflush(stdout);
+	char regex_char[MAX_MESSAGE_SIZE];
+	memset(regex_char,0,MAX_MESSAGE_SIZE);
+	strcat(regex_char,".*");
+	strcat(regex_char,secret);
+	strcat(regex_char,".*");
+	regex_t regex;
+	int rflag = regcomp(&regex, regex_char, 0);
 
+	if (rflag) {
+		fprintf(stderr, "\nCould not compile regex\n");
+		exit(1);
+	}
 
+	printf(" DONE\n");
 
 	char buffer[MAX_MESSAGE_SIZE + 1];
 	size_t bytes_read;
@@ -50,6 +131,28 @@ int main(int argc, char const *argv[]) {
 		printf(" received.\n");
 
 		printf("<%s>\n",buffer);
+
+		//executes the regex
+		rflag=regexec(&regex, buffer, 0, NULL, 0);
+
+		if (strcmp(buffer,EXIT_COMMAND) == 0)
+		{
+			break;
+		}
+
+		if ( !rflag )
+		{
+			printf("[SERVER]: the message matches the regex 👌\n");
+		}
+		else if( rflag == REG_NOMATCH )
+		{
+			printf("[SERVER]: messgage denied\n");
+		}
+		else
+		{
+			fprintf(stderr, "[SERVER]: ERROR FATAL, REGEX FAILED\n");
+			abort();
+		}
 
 		// sleep(1);
 	}
